@@ -1,4 +1,4 @@
-#!/home/e220314/link-nfs/python-port/python27/bin/python
+#!/home/SergiiMarchuk/link-nfs/python-port/python27/bin/python
 ##!/opt/python27/bin/python
 import psutil
 import time
