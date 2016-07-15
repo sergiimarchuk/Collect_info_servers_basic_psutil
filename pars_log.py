@@ -1,4 +1,4 @@
-#!/home/e220314/link-nfs/python-port/python27/bin/python
+#!/home/SergiiMarchuk/link-nfs/python-port/python27/bin/python
 ##!/opt/python27/bin/python
 from collections import Counter
 import glob
@@ -138,9 +138,9 @@ def  send_html_report(html):
             import smtplib
 
             #me = hfqdn
-            me = 'root@ilp-njord.local'
+            me = 'root@collect-srv.local'
             #you = emails
-            you = ['sergii.marchuk@evry.com','Sergei.Saenko@evry.com']
+            you = ['sergii.marchuk@.com']
 
             msg = MIMEMultipart('alternative')
             msg['Subject'] = "Possible issue on server " + hfqdn
@@ -151,7 +151,7 @@ def  send_html_report(html):
 
             msg.attach(part2)
 
-            s = smtplib.SMTP('smtp.cosng.net')
+            s = smtplib.SMTP('smtp.Server')
             s.sendmail(me, you, msg.as_string())
             s.quit()
             print(html)
