@@ -152,11 +152,10 @@ def  send_html_report(html):
             #me = hfqdn
             me = 'root@ilp-njord.local'
             #you = emails
-            you = ['sergii.marchuk@evry.com','Sergei.Saenko@evry.com']
-	    #you = ['sergii.marchuk@evry.com']
+            you = ['sergii.marchuk@domain.com']
 
             msg = MIMEMultipart('alternative')
-            msg['Subject'] = "Collected some info from hosts OracleVM. " + str(stamp_now)
+            msg['Subject'] = "Collected some info from hosts " + str(stamp_now)
             msg['From'] = me
             msg['To'] = ','.join(you)
 
