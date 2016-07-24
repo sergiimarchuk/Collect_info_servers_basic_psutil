@@ -150,7 +150,7 @@ def  send_html_report(html):
             import smtplib
 
             #me = hfqdn
-            me = 'root@ilp-njord.local'
+            me = 'root@il.local'
             #you = emails
             you = ['sergii.marchuk@domain.com']
 
@@ -163,7 +163,7 @@ def  send_html_report(html):
 
             msg.attach(part2)
 
-            s = smtplib.SMTP('smtp.cosng.net')
+            s = smtplib.SMTP('smtp.....net')
             s.sendmail(me, you, msg.as_string())
             s.quit()
             print(html)
