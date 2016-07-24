@@ -2,8 +2,8 @@
 - hosts: all
   tasks:
   - name: Update script
-    copy: src=/home/SergiiMarchuk/link-nfs/python-port/python27/working-scripts/test-collection/logg.py dest=/home/SergiiMarchuk/link-nfs/python-port/python27/working-scripts/test-collection/logg.py  mode=0744
+    copy: src=/home/e220314/link-nfs/python-port/python27/working-scripts/test-collection/logg.py dest=/home/e220314/link-nfs/python-port/python27/working-scripts/test-collection/logg.py  mode=0744
   - name: Run script
-    command: /home/SergiiMarchuk/link-nfs/python-port/python27/working-scripts/test-collection/logg.py
+    command: /home/e220314/link-nfs/python-port/python27/working-scripts/test-collection/logg.py
   - name: Fetch report
-    fetch: src=/home/SergiiMarchuk/local_Report dest=/home/e220314/qa_py/local_{{ inventory_hostname }} flat=yes
+    fetch: src=/home/e220314/local_Report dest=/home/e220314/qa_py/local_{{ inventory_hostname }} flat=yes

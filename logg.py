@@ -1,4 +1,4 @@
-#!/home/SergiiMarchuk/link-nfs/python-port/python27/bin/python
+#!/home/e220314/link-nfs/python-port/python27/bin/python
 ##!/opt/python27/bin/python
 import psutil
 import time
@@ -15,12 +15,12 @@ fqdn_srv = "FQDN Server: " +  socket.getfqdn() + ":"
 #Comm: Date stamp
 stamp_now = datetime.datetime.now()
 
-#Comm: Logname
+#Comm: Logname 
 #file_log_name = "local_"+str(fqdn) + "_" + str(stamp_now).replace(" ","_").replace(":","_").replace(".","__")
-file_log_name = "localZZZ"
-print file_log_name
+file_log_name = "local_Report"
+print file_log_name 
 
-# -- Section memory
+# -- Section memory 
 percentUsed = psutil.virtual_memory().percent
 def memory_usage_status():
         """ Check Usage memory """
@@ -29,11 +29,11 @@ def memory_usage_status():
         total_threshold1= int(virt.total / 1024 / 1024)
 
         if percentUsed > 80 and percentUsed < 90:
-                return "Status Warning."
+		return "Status Warning. " + str(percentUsed) + "%"
         if percentUsed >= 90:
-                return "Status Crtitacal."
+		return "Status Crtitical. " + str(percentUsed) + "%"
         if percentUsed < 80:
-                return "Status Ok."
+		return "Status Ok. " + str(percentUsed) + "%"
 
 memory_usage_status_u = str(stamp_now)  + " " + fqdn_srv  + " .:SECTION MEMORY:. " +memory_usage_status()
 #with open ('localhost-5656', 'a') as f: f.write (memory_usage_status_u + '\n')
@@ -52,6 +52,7 @@ def memory_usage_collect():
 memory_usage_collect_u = str(stamp_now)  + " " + fqdn_srv  + " .:COLLECT INFO MEMORY:. " + memory_usage_collect()
 with open (file_log_name, 'a') as f: f.write (memory_usage_collect_u + '\n')
 
+
 # -- Section SWAP
 def util_swap_status():
         """ Percent uses swap: (int(swap.used / 1024)*100%) / (int(swap.total / 1024) """
@@ -59,18 +60,18 @@ def util_swap_status():
         perUsSw = ((int(swap.used / 1024)*100) / (int(swap.total / 1024)));
         SWAP_Total = "Swap Total " + str(int(swap.total / 1024 / 1024)) + " Mb."
         SWAP_Used = " SWAP Used " + str(int(swap.used / 1024 /1024)) + " Mb." + " Percent value " + str(perUsSw) + "%"
-
-        #Comm: Common variable SWAP include genaral info about this.
+	
+	#Comm: Common variable SWAP include genaral info about this. 
         #print " SWAP Free:                    | " + str(int(swap.free / 1024)) + " K"
-        if perUsSw  >= 30 and perUsSw < 50:
-                return "Status Warning."
-        if perUsSw >= 50:
-                return "Status Critical."
+        if perUsSw  >= 50 and perUsSw < 85:
+                return "Status Warning. " + str(perUsSw) + "%"
+        if perUsSw >= 85:
+                return "Status Critical. " + str(perUsSw) + "%"
                 #print ".................. Current uses SWAP: " +str(perUsSw)+"%"+ ".....................\n\n"
                 #print ".................. Critical, please take care. .................";
-        if perUsSw >=0 and perUsSw < 10:
+        if perUsSw >=0 and perUsSw < 50:
                 #print ".................. Current uses SWAP: " +str(perUsSw)+"%"+ "..................."
-                return "Status Ok."
+                return "Status Ok. " + str(perUsSw) + "%"
 
 util_swap_status_u = str(stamp_now)  + " " + fqdn_srv  + " .:SECTION SWAP:. " + util_swap_status()
 with open (file_log_name, 'a') as f: f.write (util_swap_status_u + '\n')
@@ -92,35 +93,39 @@ def util_swap_collect():
 util_swap_collect_u = str(stamp_now)  + " " + fqdn_srv  + " .:COLLECT INFO SWAP:. " + util_swap_collect()
 with open (file_log_name, 'a') as f: f.write (util_swap_collect_u + '\n')
 
-# -- Section CPU
+
+
+# -- Section CPU 
 def util_cpu_status():
-        """ Utilization CPU. But weird i got bugs during counting cpu phisical / logical. """
+	""" Utilization CPU. But weird i got bugs during counting cpu phisical / logical. """
         Number_of_CPUs = str(psutil.cpu_count())
         Number_of_Physical_CPUs = str(psutil.cpu_count(logical=False))
         iu = psutil.cpu_percent(interval=1, percpu=True)
-        lenght = len(iu)
+	lenght = len(iu)
         c = 0; m = []
-        while c <= lenght:
-                for cn in iu:
-                        if cn >= 90:
-                                #return "Status Critical. Uusage CPU count" + str(c) + str(cn) + "%"
-                                status  = "Core " + str(c) + " Status Critical." #+ " Util CPU " + str(cn) + "%"
-                                m.append(status)
-                        if cn >= 75 and cn <90:
-                                #return "Status Warning. Usage CPU count" + str(c) + str(cn) + "%"
-                                status  = "Core " + str(c) + " Status Warning."#+ " Util CPU " + str(cn) + "%"
-                                m.append(status)
-                        if cn < 75:
-                                #return "Status OK. Utilization is OK","Kernel count :" + str(c)
-                                status  = " ::Core " + str(c) + ". Status OK.::" # + " Util CPU " + str(cn) + "%"
-                                m.append(status)
-                        c = c + 1
-                rs = (str(m).replace("[","")).replace("]","").replace("'","").replace(",","")
-                print (rs)
-                return (rs)
+	while c <= lenght:
+	        for cn in iu:
+        	        if cn >= 90:
+                	        #return "Status Critical. Uusage CPU count" + str(c) + str(cn) + "%"
+				status  = " ::Core " + str(c) + ". Status Critical. " + str(cn) + "::" #+ " Util CPU " + str(cn) + "%"
+				m.append(status)
+                	if cn >= 75 and cn <90:
+                        	#return "Status Warning. Usage CPU count" + str(c) + str(cn) + "%"
+				status  = " ::Core " + str(c) + ". Status Warning. " + str(cn) +"::" # + " Util CPU " + str(cn) + "%"
+				m.append(status)
+                	if cn < 75:
+                        	#return "Status OK. Utilization is OK","Kernel count :" + str(c)
+				status  = " ::Core " + str(c) + ". Status Ok. "+ str(cn) + "::"  #+ " Util CPU " + str(cn) + "%"
+				m.append(status)
+			c = c + 1
+		rs = (str(m).replace("[","")).replace("]","").replace("'","").replace(",","")
+		irs = (str(m).replace("[","")).replace("]","").replace("'","").replace(",","") + " " + str(cn) + "%"
+		print (rs),"  ",irs
+		return (rs)
 
 util_cpu_status_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION CPU:. " + str(util_cpu_status())
 with open (file_log_name, 'a') as f: f.write (util_cpu_status_u + '\n')
+
 
 def util_cpu_collect():
         """ Utilization CPU. But weird i got bugs during counting cpu phisical / logical. """
@@ -141,7 +146,7 @@ def util_cpu_collect():
                                 m.append(status)
                         if cn < 75:
                                 #return "Status OK. Utilization is OK","Kernel count :" + str(c)
-                                status  = "Status OK. Core " + str(c) + " Util CPU " + str(cn) + "%"
+                                status  = "Status Ok. Core " + str(c) + " Util CPU " + str(cn) + "%"
                                 m.append(status)
                         c = c + 1
                 rs = (str(m).replace("[","")).replace("]","").replace("'","")
@@ -155,34 +160,33 @@ with open (file_log_name, 'a') as f: f.write (util_cpu_collect_u + '\n')
 def util_disk_status():
         """  Utilization disk space """
         io = psutil.disk_partitions()
-        c_mountp = 0
-        counter = 0
-        sta = []
+	c_mountp = 0	
+	counter = 0
+	sta = []
         for i in str(io).split(", "):
                 if "mountpoint" in i:
-                        y = ((str((str(i).split("='"))[1]).split("'"))[0]);
-                        #print "MOUNTPOINT)",y
-                        c_mountp = c_mountp + 1
-                        #print c_mountp
-                        while counter < c_mountp:
-                                for li in [y]:
-                                        disk = psutil.disk_usage(li);
-                                        #print "Total partition size (GB):  "+li+"     | ",round((disk.total / 1024 / 1024 / float(1024)),2),"GB"
-                                        useSizePer =  round(((round((disk.used / 1024 / 1024 / float(1024)),2))*100 / round((disk.total / 1024 / 1024 / float(1024)),2)),2)
-                                        #print "Used  partition size (GB):  "+li+"     | ",round((disk.used / 1024 / 1024 / float(1024)),2),"GB"
-                                        if useSizePer > 80 and useSizePer < 90:
-                                                status  = "Status Warning." + " Part. " + li + " Utilization memory is between 80% and 90% Current value is "+ str(useSizePer) + "%"
-                                                sta.append(status)
-                                        if useSizePer >= 90:
-                                                status =  "Status Critical." + " Part. "+ li + " Current uses memory: " +str(useSizePer)+"%"+ "............\n";
-                                                sta.append(status)
-                                        if useSizePer < 80:
-                                                status = "Status Ok." + " Part. " + li + " " + str(useSizePer)+"%"
-                                                sta.append(status)
-                                        counter = counter + 1
-        res = (str(sta).replace("[","")).replace("]","").replace("'","").replace("(","").replace(")","")
-        return res
-
+                        y = ((str((str(i).split("='"))[1]).split("'"))[0]); 
+			#print "MOUNTPOINT)",y
+			c_mountp = c_mountp + 1 
+			#print c_mountp
+			while counter < c_mountp: 
+                       		for li in [y]:
+                               		disk = psutil.disk_usage(li);
+                               		#print "Total partition size (GB):  "+li+"     | ",round((disk.total / 1024 / 1024 / float(1024)),2),"GB"
+                               		useSizePer =  round(((round((disk.used / 1024 / 1024 / float(1024)),2))*100 / round((disk.total / 1024 / 1024 / float(1024)),2)),2)
+                               		#print "Used  partition size (GB):  "+li+"     | ",round((disk.used / 1024 / 1024 / float(1024)),2),"GB" 
+                               		if useSizePer > 80 and useSizePer < 90:
+        	              			status  = "Status Warning." + " Part. " + li + " " + str(useSizePer) + "%"
+						sta.append(status)
+                               		if useSizePer >= 90:
+                               			status =  "Status Critical." + " Part. "+ li + " " + str(useSizePer)+"%";
+						sta.append(status)
+                               		if useSizePer < 80:
+                               			status = "Status Ok." + " Part. " + li + " " + str(useSizePer)+"%"
+						sta.append(status)
+					counter = counter + 1
+	res = (str(sta).replace("[","")).replace("]","").replace("'","").replace("(","").replace(")","")
+	return res
 
 util_disk_status_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION DISKS:. " + util_disk_status()
 with open (file_log_name, 'a') as f: f.write (util_disk_status_u + '\n')
@@ -229,19 +233,19 @@ def util_network_nic():
         nnic = psutil.net_if_addrs()
         nlist =list(nnic)
         i = 0
-        net_arr_nic = []
-        net_arr_stat = []
-        net_arr = []
+	net_arr_nic = []
+	net_arr_stat = []
+	net_arr = []
         for itemn in nlist:
                 ninfo = nnic.get(itemn)
                 for niccont in ninfo:
-                        gen_net_info = str(itemn) + " " + str(niccont)
-                        g1 =  str(itemn)
-                        g2 = str((str(niccont).replace("snic(family=","").replace(", ptp=None)","")).split(", ")[1:3]).replace("\"]","").replace("[\"","").replace("\"","")
-                        g = "NIC: " + g1 + ": " + g2
-                        net_arr.append(g)
-#       res = str(net_arr).replace("[","").replace("]","").replace("\"",""); #print res
-        return " .:STAT NET_INFO:. " + str(net_arr)
+			gen_net_info = str(itemn) + " " + str(niccont)
+			g1 =  str(itemn)
+			g2 = str((str(niccont).replace("snic(family=","").replace(", ptp=None)","")).split(", ")[1:3]).replace("\"]","").replace("[\"","").replace("\"","")
+			g = "NIC: " + g1 + ": " + g2
+			net_arr.append(g)			
+#	res = str(net_arr).replace("[","").replace("]","").replace("\"",""); #print res	
+	return " .:STAT NET_INFO:. " + str(net_arr)
 
 util_network_nic_u = str(stamp_now) + " " + fqdn_srv  + util_network_nic()
 with open (file_log_name, 'a') as f: f.write (util_network_nic_u + '\n')
@@ -271,29 +275,29 @@ def util_network_issue():
                                 if int(((el).split("="))[1]) > 0:
                                         status_in = "Issue on NIC: " + itemco + ": " + el
                                         netsta_in.append(status_in)
-                                elif int(((el).split("="))[1]) == 0:
-                                        status_in = "Status OK. NIC for input. NIC: " + itemco
-                                        netsta_out.append(status_in)
+				elif int(((el).split("="))[1]) == 0:   
+					status_in = "Status OK. NIC for input. NIC: " + itemco 
+					netsta_out.append(status_in)
                         if 'errout' in el:
                                 if int(((el).split("="))[1]) > 0:
                                         status_out = "Issue on NIC: " + itemco + ": " + el
                                         netsta_out.append(status_out)
-                                elif int(((el).split("="))[1]) == 0:
-                                        status_out  = "Status OK. NIC for output. NIC: " + itemco
-                                        netsta_out.append(status_out)
-        status = str(status_in) + " " + str(status_out)
-        result = str(netsta_in) + " " + str(netsta_out)
-        res =  (result).replace("[","").replace("]","").replace("'","")
-        return res
+				elif int(((el).split("="))[1]) == 0:
+					status_out  = "Status OK. NIC for output. NIC: " + itemco 
+					netsta_out.append(status_out)
+	status = str(status_in) + " " + str(status_out)
+	result = str(netsta_in) + " " + str(netsta_out)
+	res =  (result).replace("[","").replace("]","").replace("'","")
+	return res
 util_network_issue_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION NETWORK:. " + util_network_issue()
 with open (file_log_name, 'a') as f: f.write (util_network_issue_u + '\n')
 
 # -- Section Boot Time
 
 def boot_time_stat():
-        " ... Boot time From ... "
-        dati = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
-        return dati
+	" ... Boot time From ... "
+	dati = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+	return dati 
 
 boot_time_stat_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION BOOT:. Server UP from: " + boot_time_stat()
 with open (file_log_name, 'a') as f: f.write (boot_time_stat_u + '\n')
@@ -301,10 +305,12 @@ with open (file_log_name, 'a') as f: f.write (boot_time_stat_u + '\n')
 # -- Section Users
 
 def user_logged():
-        u_logged = psutil.users()
-        return str(u_logged)
+	u_logged = psutil.users()
+	return str(u_logged)
 
 user_logged_u = str(stamp_now) + " " + fqdn_srv  + " .:STAT USERS LOGGED:. " +  user_logged()
 with open (file_log_name, 'a') as f: f.write (user_logged_u + '\n')
 
 
+
+#2016.07.11 15:37
