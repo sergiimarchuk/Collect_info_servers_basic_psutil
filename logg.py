@@ -1,5 +1,5 @@
-#!/home/e220314/link-nfs/python-port/python27/bin/python
-##!/opt/python27/bin/python
+#!/usr/bin/python
+##!/home/e220314/link-nfs/python-port/python27/bin/python
 import psutil
 import time
 import datetime
@@ -7,51 +7,103 @@ import json
 import logging
 import socket
 
-#Comm: FQDN
-fqdn = socket.getfqdn()
-fqdn_srv = "FQDN Server: " +  socket.getfqdn() + ":"
-#print fqdn_srv
 
-#Comm: Date stamp
-stamp_now = datetime.datetime.now()
+def main():
+    #Comm: FQDN
+    fqdn = socket.getfqdn()
+    fqdn_srv = "FQDN Server: " +  socket.getfqdn() + ":"
+    #print fqdn_srv
 
-#Comm: Logname 
-#file_log_name = "local_"+str(fqdn) + "_" + str(stamp_now).replace(" ","_").replace(":","_").replace(".","__")
-file_log_name = "local_Report"
-print file_log_name 
+    #Comm: Date stamp
+    stamp_now = datetime.datetime.now()
 
-# -- Section memory 
-percentUsed = psutil.virtual_memory().percent
-def memory_usage_status():
-        """ Check Usage memory """
-        virt = psutil.virtual_memory()
+    #Comm: Logname 
+    #file_log_name = "local_"+str(fqdn) + "_" + str(stamp_now).replace(" ","_").replace(":","_").replace(".","__")
+    file_log_name = "local_Report"
+    print file_log_name 
 
-        total_threshold1= int(virt.total / 1024 / 1024)
+    # -- Section memory 
+    percentUsed = psutil.virtual_memory().percent
 
-        if percentUsed > 80 and percentUsed < 90:
-		return "Status Warning. " + str(percentUsed) + "%"
-        if percentUsed >= 90:
-		return "Status Crtitical. " + str(percentUsed) + "%"
-        if percentUsed < 80:
-		return "Status Ok. " + str(percentUsed) + "%"
+    ###
+    # OOP
+    ###
 
-memory_usage_status_u = str(stamp_now)  + " " + fqdn_srv  + " .:SECTION MEMORY:. " +memory_usage_status()
-#with open ('localhost-5656', 'a') as f: f.write (memory_usage_status_u + '\n')
-with open (file_log_name, 'w') as f: f.write (memory_usage_status_u + '\n')
+    memory = server_memory()
+
+    memory_usage_status_u = str(stamp_now)  + " " + fqdn_srv  + " .:SECTION MEMORY:. " + memory.memory_usage_status(percentUsed)
+    #with open ('localhost-5656', 'a') as f: f.write (memory_usage_status_u + '\n')
+    with open (file_log_name, 'w') as f: f.write (memory_usage_status_u + '\n')
 
 
-percentUsed = psutil.virtual_memory().percent
-def memory_usage_collect():
-        """ Check Usage memory """
-        virt = psutil.virtual_memory()
+    percentUsed = psutil.virtual_memory().percent
 
-        total_threshold1= int(virt.total / 1024 / 1024)
 
-        return str(total_threshold1) + " Mb. " + "Current Usage Memory is "  + str(percentUsed) + "%"
+    memory_usage_collect_u = str(stamp_now)  + " " + fqdn_srv  + " .:COLLECT INFO MEMORY:. " + memory.memory_usage_collect(percentUsed)
+    with open (file_log_name, 'a') as f: f.write (memory_usage_collect_u + '\n')
+    
+    ###
+    # OOP
+    ###
 
-memory_usage_collect_u = str(stamp_now)  + " " + fqdn_srv  + " .:COLLECT INFO MEMORY:. " + memory_usage_collect()
-with open (file_log_name, 'a') as f: f.write (memory_usage_collect_u + '\n')
+    util_swap_status_u = str(stamp_now)  + " " + fqdn_srv  + " .:SECTION SWAP:. " + util_swap_status()
+    with open (file_log_name, 'a') as f: f.write (util_swap_status_u + '\n')
 
+    util_swap_collect_u = str(stamp_now)  + " " + fqdn_srv  + " .:COLLECT INFO SWAP:. " + util_swap_collect()
+    with open (file_log_name, 'a') as f: f.write (util_swap_collect_u + '\n')
+
+    util_cpu_status_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION CPU:. " + str(util_cpu_status())
+    with open (file_log_name, 'a') as f: f.write (util_cpu_status_u + '\n')
+
+    util_cpu_collect_u = str(stamp_now) + " " + fqdn_srv  + " .:COLLECT INFO CPU:. " + str(util_cpu_collect())
+    with open (file_log_name, 'a') as f: f.write (util_cpu_collect_u + '\n')
+
+    util_disk_status_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION DISKS:. " + util_disk_status()
+    with open (file_log_name, 'a') as f: f.write (util_disk_status_u + '\n')
+
+    util_disk_collect_u = str(stamp_now) + " " + fqdn_srv  + " .:COLLECT INFO DISK:. " + util_disk_collect()
+    with open (file_log_name, 'a') as f: f.write (util_disk_collect_u + '\n')
+
+    util_network_nic_u = str(stamp_now) + " " + fqdn_srv  + util_network_nic()
+    with open (file_log_name, 'a') as f: f.write (util_network_nic_u + '\n')
+
+    util_network_nic()
+
+    util_network_issue_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION NETWORK:. " + util_network_issue()
+    with open (file_log_name, 'a') as f: f.write (util_network_issue_u + '\n')
+
+    boot_time_stat_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION BOOT:. Server UP from: " + boot_time_stat()
+    with open (file_log_name, 'a') as f: f.write (boot_time_stat_u + '\n')
+
+
+    #####
+
+    user_logged_u = str(stamp_now) + " " + fqdn_srv  + " .:STAT USERS LOGGED:. " +  user_logged()
+    with open (file_log_name, 'a') as f: f.write (user_logged_u + '\n')
+
+
+
+class server_memory():
+    def memory_usage_status(self,percentUsed):
+            """ Check Usage memory """
+            virt = psutil.virtual_memory()
+
+            total_threshold1= int(virt.total / 1024 / 1024)
+
+            if percentUsed > 80 and percentUsed < 90:
+    		return "Status Warning. " + str(percentUsed) + "%"
+            if percentUsed >= 90:
+    		return "Status Crtitical. " + str(percentUsed) + "%"
+            if percentUsed < 80:
+    		return "Status Ok. " + str(percentUsed) + "%"
+
+    def memory_usage_collect(self,percentUsed):
+            """ Check Usage memory """
+            virt = psutil.virtual_memory()
+
+            total_threshold1= int(virt.total / 1024 / 1024)
+
+            return str(total_threshold1) + " Mb. " + "Current Usage Memory is "  + str(percentUsed) + "%"
 
 # -- Section SWAP
 def util_swap_status():
@@ -73,9 +125,6 @@ def util_swap_status():
                 #print ".................. Current uses SWAP: " +str(perUsSw)+"%"+ "..................."
                 return "Status Ok. " + str(perUsSw) + "%"
 
-util_swap_status_u = str(stamp_now)  + " " + fqdn_srv  + " .:SECTION SWAP:. " + util_swap_status()
-with open (file_log_name, 'a') as f: f.write (util_swap_status_u + '\n')
-
 def util_swap_collect():
         """ Percent uses swap: (int(swap.used / 1024)*100%) / (int(swap.total / 1024) """
         swap = psutil.swap_memory()
@@ -89,11 +138,6 @@ def util_swap_collect():
                 #print ".................. Critical, please take care. .................";
                 #print ".................. Current uses SWAP: " +str(perUsSw)+"%"+ "..................."
         return (SWAP_Total + " Current uses SWAP: " + str(perUsSw)+"%")
-
-util_swap_collect_u = str(stamp_now)  + " " + fqdn_srv  + " .:COLLECT INFO SWAP:. " + util_swap_collect()
-with open (file_log_name, 'a') as f: f.write (util_swap_collect_u + '\n')
-
-
 
 # -- Section CPU 
 def util_cpu_status():
@@ -123,10 +167,6 @@ def util_cpu_status():
 		print (rs),"  ",irs
 		return (rs)
 
-util_cpu_status_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION CPU:. " + str(util_cpu_status())
-with open (file_log_name, 'a') as f: f.write (util_cpu_status_u + '\n')
-
-
 def util_cpu_collect():
         """ Utilization CPU. But weird i got bugs during counting cpu phisical / logical. """
         Number_of_CPUs = str(psutil.cpu_count())
@@ -152,9 +192,6 @@ def util_cpu_collect():
                 rs = (str(m).replace("[","")).replace("]","").replace("'","")
                 #print (rs)
                 return (rs)
-
-util_cpu_collect_u = str(stamp_now) + " " + fqdn_srv  + " .:COLLECT INFO CPU:. " + str(util_cpu_collect())
-with open (file_log_name, 'a') as f: f.write (util_cpu_collect_u + '\n')
 
 # -- Section Utilization disk space
 def util_disk_status():
@@ -188,9 +225,6 @@ def util_disk_status():
 	res = (str(sta).replace("[","")).replace("]","").replace("'","").replace("(","").replace(")","")
 	return res
 
-util_disk_status_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION DISKS:. " + util_disk_status()
-with open (file_log_name, 'a') as f: f.write (util_disk_status_u + '\n')
-
 def util_disk_collect():
         """  Utilization disk space """
         io = psutil.disk_partitions()
@@ -223,10 +257,6 @@ def util_disk_collect():
         res = (str(sta).replace("[","")).replace("]","").replace("'","").replace("(","").replace(")","")
         return res
 
-util_disk_collect_u = str(stamp_now) + " " + fqdn_srv  + " .:COLLECT INFO DISK:. " + util_disk_collect()
-with open (file_log_name, 'a') as f: f.write (util_disk_collect_u + '\n')
-
-
 # -- Section Network
 def util_network_nic():
         " ... Utilization networking NIC:   ..."
@@ -246,12 +276,6 @@ def util_network_nic():
 			net_arr.append(g)			
 #	res = str(net_arr).replace("[","").replace("]","").replace("\"",""); #print res	
 	return " .:STAT NET_INFO:. " + str(net_arr)
-
-util_network_nic_u = str(stamp_now) + " " + fqdn_srv  + util_network_nic()
-with open (file_log_name, 'a') as f: f.write (util_network_nic_u + '\n')
-
-util_network_nic()
-
 
 def util_network_issue():
         " ... Utilization networking issue:   ..."
@@ -289,8 +313,6 @@ def util_network_issue():
 	result = str(netsta_in) + " " + str(netsta_out)
 	res =  (result).replace("[","").replace("]","").replace("'","")
 	return res
-util_network_issue_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION NETWORK:. " + util_network_issue()
-with open (file_log_name, 'a') as f: f.write (util_network_issue_u + '\n')
 
 # -- Section Boot Time
 
@@ -298,19 +320,16 @@ def boot_time_stat():
 	" ... Boot time From ... "
 	dati = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
 	return dati 
-
-boot_time_stat_u = str(stamp_now) + " " + fqdn_srv  + " .:SECTION BOOT:. Server UP from: " + boot_time_stat()
-with open (file_log_name, 'a') as f: f.write (boot_time_stat_u + '\n')
-
 # -- Section Users
 
 def user_logged():
 	u_logged = psutil.users()
 	return str(u_logged)
 
-user_logged_u = str(stamp_now) + " " + fqdn_srv  + " .:STAT USERS LOGGED:. " +  user_logged()
-with open (file_log_name, 'a') as f: f.write (user_logged_u + '\n')
 
 
 
 #2016.07.11 15:37
+
+if __name__ == '__main__':
+    main()
