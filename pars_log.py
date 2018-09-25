@@ -1,7 +1,7 @@
 #!/home/e220314/link-nfs/python-port/python27/bin/python
 ##!/opt/python27/bin/python
 #Script version 0.2
-#Author e220314
+#Author 
 from collections import Counter
 import glob
 import os
