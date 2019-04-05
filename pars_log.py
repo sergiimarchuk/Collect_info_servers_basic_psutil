@@ -1,4 +1,4 @@
-#!/home/e220314/link-nfs/python-port/python27/bin/python
+#!/home/link-nfs/python-port/python27/bin/python
 ##!/opt/python27/bin/python
 #Script version 0.2
 #Author 
