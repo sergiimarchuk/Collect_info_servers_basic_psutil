@@ -1,5 +1,5 @@
 #!/usr/bin/python
-##!/home/e220314/link-nfs/python-port/python27/bin/python
+##!/home/USER/link-nfs/python-port/python27/bin/python
 import psutil
 import time
 import datetime
