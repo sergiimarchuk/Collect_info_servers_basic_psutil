@@ -1,5 +1,5 @@
 ##### quick process file py_qal distribute on servers. 
-## psutil: Python library for retrieving system information (CPU, memory, disk, network).
+## Utilizing psutil, a Python library, to gather system information including CPU, memory, disk, and network usage.
 ### Prepare Files on Remote Servers.
 ```bash
 ssh TestSrv 'mkdir /home/SergiiMarchuk/link-nfs'
